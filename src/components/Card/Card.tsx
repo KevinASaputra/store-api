@@ -1,55 +1,33 @@
 import { useEffect, useState } from "react"
+import { productsProps, useFetchProducts } from "../../services/useFetchProducts";
 import { Button } from "../../common/components/Button";
 import { addToCart } from "../../common/features/cart/cartSlice";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-
-type resultProps = {
-  id: number
-  title: string
-  price: number
-  description: string
-  category: string
-  image: string
-}
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 
 
 export const Card = () => {
-  const [isLoading, setLoading] = useState(false);
-  const [products, setProducts] = useState<resultProps[]>([]);
+  const { isLoading, fetchProducts, products } = useFetchProducts();
   const [showMore, setShowMore] = useState(false);
   const dispatch = useAppDispatch();
   const cartItem = useAppSelector((state) => state.cart.cartItems)
   console.log(cartItem)
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const apiURL = 'https://fakestoreapi.com/products';
-        const response = await fetch(apiURL)
-        const data = await response.json()
-        setProducts(data)
-      } catch (err) {
-        console.error(err)
-      }
-      finally {
-        setLoading(false)
-      }
-    }
     fetchProducts();
-  }, []);
+    // eslint-disable-next-line
+  }, [])
 
   if (isLoading) {
     return <div>Loading...</div>
   }
 
-  const handleAddToCart = (product: resultProps) => {
+  const handleAddToCart = (product: productsProps) => {
     dispatch(addToCart(product))
   }
 
   return (
     <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
-      {products.map((product) => {
+      {products && products.length && products.map((product) => {
         return (
           <div
             key={product.id}
@@ -58,13 +36,13 @@ export const Card = () => {
             <div className="relative w-[80%] h-[350px] mx-auto overflow-hidden">
               <img
                 src={product.image}
-                alt={product.title}
+                alt={product.name}
                 className="w-full h-full object-contain rounded-lg"
               />
             </div>
-            <h3 className="font-bold mt-8">{product.title}</h3>
+            <h3 className="font-bold mt-8">{product.name}</h3>
             <div className="mt-4 flex flex-col items-start">
-              {showMore ? product.description : `${product.description.substring(0, 50)}`}
+              {/* {showMore ? product.description : `${product.description.substring(0, 50)}`} */}
               <button className="" onClick={() => setShowMore(!showMore)}>
                 {showMore ? 'Show Less' : 'Show More'}
               </button>
