@@ -10,12 +10,12 @@ import { Login } from './pages/Login.tsx'
 
 const route = createBrowserRouter([
   {
-    path: '/',
+    path: '/Home',
     element: <Home />,
     errorElement: <NotFoundPage />,
   },
   {
-    path: '/loginPage',
+    path: '/',
     element: <Login />,
     errorElement: <NotFoundPage />,
   }
